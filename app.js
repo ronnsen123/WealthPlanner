@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Wire up UI
+  initLandingOverlay();
   initApiKey();
   initChat();
   initGoalsPanel();
@@ -188,6 +189,7 @@ async function handleSend() {
     (fullText) => {
       const cleanText = extractAndUpdateGoals(fullText);
       bubbleEl.innerHTML = marked.parse(cleanText);
+      createFeedbackButtons(assistantEl);
       scrollChatToBottom();
       isSending = false;
       document.getElementById('chat-send-btn').disabled = false;
@@ -320,6 +322,68 @@ function useSuggestion(btn) {
   if (ChatEngine.apiKey) {
     handleSend();
   }
+}
+
+// ===== Landing Overlay =====
+
+function initLandingOverlay() {
+  const overlay = document.getElementById('landing-overlay');
+  const cta = document.getElementById('landing-cta');
+  if (!overlay || !cta) return;
+
+  cta.addEventListener('click', () => {
+    overlay.classList.add('fade-out');
+    overlay.addEventListener('transitionend', () => {
+      overlay.remove();
+    }, { once: true });
+  });
+}
+
+// ===== Feedback Buttons =====
+
+const messageFeedback = [];
+
+function createFeedbackButtons(messageEl) {
+  const row = document.createElement('div');
+  row.className = 'feedback-row';
+
+  const thumbUpSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>`;
+  const thumbDownSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L14 22h0a3.13 3.13 0 0 1-3-3.88Z"/></svg>`;
+
+  const btnUp = document.createElement('button');
+  btnUp.className = 'feedback-btn';
+  btnUp.title = 'Helpful';
+  btnUp.innerHTML = thumbUpSvg;
+
+  const btnDown = document.createElement('button');
+  btnDown.className = 'feedback-btn';
+  btnDown.title = 'Not helpful';
+  btnDown.innerHTML = thumbDownSvg;
+
+  const feedbackIndex = messageFeedback.length;
+  messageFeedback.push(null);
+
+  btnUp.addEventListener('click', () => {
+    messageFeedback[feedbackIndex] = 'up';
+    btnUp.classList.add('selected');
+    btnUp.classList.remove('dimmed');
+    btnDown.classList.remove('selected');
+    btnDown.classList.add('dimmed');
+  });
+
+  btnDown.addEventListener('click', () => {
+    messageFeedback[feedbackIndex] = 'down';
+    btnDown.classList.add('selected');
+    btnDown.classList.remove('dimmed');
+    btnUp.classList.remove('selected');
+    btnUp.classList.add('dimmed');
+  });
+
+  row.appendChild(btnUp);
+  row.appendChild(btnDown);
+
+  // Append feedback row after the bubble, inside the message div
+  messageEl.appendChild(row);
 }
 
 // ===== Panel Divider (Resizable) =====

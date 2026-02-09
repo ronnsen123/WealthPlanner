@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Financial Planner — Educational Sandbox</title>
+  <title>WealthPlanner — AI Financial Planning POC</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,15 +14,48 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 
   <!-- App Styles -->
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
+
+  <!-- ===== Landing Overlay ===== -->
+  <div id="landing-overlay">
+    <div class="landing-content">
+      <div class="landing-badge">Fidelity Center for Applied Technology</div>
+      <h1 class="landing-title">WealthPlanner</h1>
+      <p class="landing-subtitle">An AI-Powered Financial Planning Proof of Concept</p>
+      <p class="landing-description">
+        We built this proof of concept to explore how conversational AI can transform holistic financial planning.
+        Instead of navigating complex dashboards, clients engage in a natural dialogue with an AI advisor that
+        understands their complete financial picture — investments, income, debt, estate planning, and tax strategy — all at once.
+      </p>
+      <div class="landing-features">
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">🤖</div>
+          <div class="landing-feature-title">AI Financial Advisor</div>
+          <div class="landing-feature-desc">Natural language conversations powered by Claude that provide personalized financial guidance</div>
+        </div>
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">📊</div>
+          <div class="landing-feature-title">Holistic View</div>
+          <div class="landing-feature-desc">Portfolio, income, debt, and estate data analyzed together for cross-domain insights</div>
+        </div>
+        <div class="landing-feature-card">
+          <div class="landing-feature-icon">🎯</div>
+          <div class="landing-feature-title">Goal Discovery</div>
+          <div class="landing-feature-desc">AI automatically identifies and tracks financial goals as the conversation evolves</div>
+        </div>
+      </div>
+      <button id="landing-cta" class="landing-cta">Get Started</button>
+      <p class="landing-disclaimer">For demonstration purposes only. All portfolio data is fictional.</p>
+    </div>
+  </div>
 
   <!-- ===== Header ===== -->
   <header id="app-header">
     <div class="header-left">
-      <h1>Financial Planner</h1>
-      <span class="subtitle">Educational Sandbox</span>
+      <h1>WealthPlanner</h1>
+      <span class="subtitle">AI Financial Planning POC</span>
     </div>
     <div class="header-right">
       <div id="api-key-section">
@@ -114,13 +147,13 @@
   </main>
 
   <!-- App Scripts (order matters — data → compute → helpers → render → chat → goals → app) -->
-  <script src="portfolio-data.js?v=9"></script>
-  <script src="portfolio-compute.js?v=9"></script>
-  <script src="render-helpers.js?v=9"></script>
-  <script src="portfolio-render.js?v=9"></script>
-  <script src="chat.js?v=9"></script>
-  <script src="goals.js?v=9"></script>
-  <script src="app.js?v=9"></script>
+  <script src="portfolio-data.js?v=10"></script>
+  <script src="portfolio-compute.js?v=10"></script>
+  <script src="render-helpers.js?v=10"></script>
+  <script src="portfolio-render.js?v=10"></script>
+  <script src="chat.js?v=10"></script>
+  <script src="goals.js?v=10"></script>
+  <script src="app.js?v=10"></script>
 
 </body>
 </html>
