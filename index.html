@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Planner — Educational Sandbox</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Marked.js for Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles.css?v=9">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header id="app-header">
+    <div class="header-left">
+      <h1>Financial Planner</h1>
+      <span class="subtitle">Educational Sandbox</span>
+    </div>
+    <div class="header-right">
+      <div id="api-key-section">
+        <input type="password" id="api-key-input" placeholder="sk-ant-... (Claude API Key)" autocomplete="off" spellcheck="false">
+        <button id="api-key-btn">Connect</button>
+        <div id="api-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Not connected</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main Layout ===== -->
+  <main id="app-main">
+
+    <!-- LEFT: Portfolio Panel -->
+    <section id="portfolio-panel">
+      <div id="scenario-overview"></div>
+      <div id="tabbed-summary"></div>
+      <div id="portfolio-accounts"></div>
+      <div id="income-details" style="display:none"></div>
+      <div id="debt-details" style="display:none"></div>
+      <div id="estate-details" style="display:none"></div>
+    </section>
+
+    <!-- Draggable Divider -->
+    <div id="panel-divider"></div>
+
+    <!-- RIGHT: Chat Panel -->
+    <section id="chat-panel">
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        This is an educational simulation with hypothetical data. Not real financial advice. All portfolio values are fictional.
+      </div>
+
+      <!-- Chat Header -->
+      <div id="chat-header">
+        <div class="advisor-avatar">MC</div>
+        <div class="advisor-info">
+          <div class="advisor-name">Morgan Chen, CFP®, CFA, CPA</div>
+          <div class="advisor-creds">Senior Financial Planner · 22 Years Experience</div>
+        </div>
+        <div class="advisor-status">
+          <span class="status-dot" id="advisor-status-dot"></span>
+          <span id="advisor-status-text">Offline</span>
+        </div>
+        <button id="clear-chat-btn" title="Clear conversation">Clear</button>
+      </div>
+
+      <!-- Goals Panel -->
+      <div id="goals-panel">
+        <div id="goals-header">
+          <div class="goals-header-left">
+            <span class="goals-icon">🎯</span>
+            <span class="goals-title">Client Goals</span>
+            <span class="goals-count" id="goals-count">0</span>
+          </div>
+          <button class="goals-toggle" id="goals-toggle" title="Toggle goals panel">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4.5L6 8.5L10 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div id="goals-body" class="collapsed">
+          <div id="goals-empty">
+            <p>No goals identified yet. Start chatting with your advisor — goals will appear here as the conversation progresses.</p>
+          </div>
+          <div id="goals-list"></div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div id="chat-messages"></div>
+
+      <!-- Typing Indicator -->
+      <div class="typing-indicator" id="typing-indicator">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+
+      <!-- Input -->
+      <div id="chat-input-area">
+        <textarea id="chat-input" placeholder="Ask your financial advisor..." rows="1" disabled></textarea>
+        <button id="chat-send-btn" disabled>Send</button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- App Scripts (order matters — data → compute → helpers → render → chat → goals → app) -->
+  <script src="portfolio-data.js?v=9"></script>
+  <script src="portfolio-compute.js?v=9"></script>
+  <script src="render-helpers.js?v=9"></script>
+  <script src="portfolio-render.js?v=9"></script>
+  <script src="chat.js?v=9"></script>
+  <script src="goals.js?v=9"></script>
+  <script src="app.js?v=9"></script>
+
+</body>
+</html>

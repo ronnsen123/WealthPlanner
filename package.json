@@ -1,0 +1,15 @@
+{
+  "name": "financial-planner-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Educational financial planning sandbox with AI advisor",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.0",
+    "vitest": "^3.0.0"
+  },
+  "type": "module"
+}
