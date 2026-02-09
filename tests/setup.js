@@ -5,13 +5,26 @@ import vm from 'vm';
 
 const ROOT = resolve(import.meta.dirname, '..');
 
-// Order matters: data → compute → helpers → render → goals (same as index.html)
+// Stubs for globals that app.js references (ChatEngine, marked, etc.)
+// These must exist before app.js is loaded so its top-level code doesn't throw.
+globalThis.marked = { parse: (t) => t, setOptions: () => {} };
+globalThis.ChatEngine = {
+  apiKey: null,
+  setApiKey: () => {},
+  buildSystemPrompt: () => '',
+  systemPrompt: '',
+  clearHistory: () => {},
+  sendMessage: async () => {},
+};
+
+// Order matters: data → compute → helpers → render → goals → app (same as index.html)
 const scripts = [
   'portfolio-data.js',
   'portfolio-compute.js',
   'render-helpers.js',
   'portfolio-render.js',
   'goals.js',
+  'app.js',
 ];
 
 // In a browser, <script> tags execute in the global scope where `const`, `function`,
