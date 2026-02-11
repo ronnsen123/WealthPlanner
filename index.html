@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 
   <!-- App Styles -->
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 
@@ -108,6 +108,12 @@
         <button id="clear-chat-btn" title="Clear conversation">Clear</button>
       </div>
 
+      <!-- Specialist Indicators -->
+      <div id="specialists-bar">
+        <div class="specialists-label">Advisory Team</div>
+        <div id="specialist-pills"></div>
+      </div>
+
       <!-- Goals Panel -->
       <div id="goals-panel">
         <div id="goals-header">
@@ -148,13 +154,14 @@
   </main>
 
   <!-- App Scripts (order matters — data → compute → helpers → render → chat → goals → app) -->
-  <script src="portfolio-data.js?v=10"></script>
-  <script src="portfolio-compute.js?v=10"></script>
-  <script src="render-helpers.js?v=10"></script>
-  <script src="portfolio-render.js?v=10"></script>
-  <script src="chat.js?v=10"></script>
-  <script src="goals.js?v=10"></script>
-  <script src="app.js?v=10"></script>
+  <script src="portfolio-data.js?v=11"></script>
+  <script src="portfolio-compute.js?v=11"></script>
+  <script src="render-helpers.js?v=11"></script>
+  <script src="portfolio-render.js?v=11"></script>
+  <script src="specialists.js?v=11"></script>
+  <script src="chat.js?v=11"></script>
+  <script src="goals.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 
 </body>
 </html>

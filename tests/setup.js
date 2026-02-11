@@ -23,6 +23,7 @@ const scripts = [
   'portfolio-compute.js',
   'render-helpers.js',
   'portfolio-render.js',
+  'specialists.js',
   'goals.js',
   'app.js',
 ];

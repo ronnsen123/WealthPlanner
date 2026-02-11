@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Wire up UI
   initLandingOverlay();
+  initSpecialistPills();
   initApiKey();
   initChat();
   initGoalsPanel();
@@ -137,6 +138,7 @@ function initChat() {
     ChatEngine.clearHistory();
     document.getElementById('chat-messages').innerHTML = '';
     resetGoals();
+    resetSpecialistIndicators();
     showWelcomeMessage();
   });
 }
@@ -168,11 +170,13 @@ async function handleSend() {
   isSending = true;
   document.getElementById('chat-send-btn').disabled = true;
   showTyping(true);
+  resetSpecialistIndicators();
 
   // Create assistant bubble (we'll fill it as we stream)
   const assistantEl = createEmptyAssistantMessage();
   const bubbleEl = assistantEl.querySelector('.message-bubble');
   let accumulatedText = '';
+  const consultedSpecialists = new Set();
 
   await ChatEngine.sendMessage(
     text,
@@ -180,15 +184,29 @@ async function handleSend() {
     (chunk, fullSoFar) => {
       showTyping(false);
       accumulatedText = fullSoFar;
-      // Strip partial GOALS_JSON block from streaming display
-      const displayText = accumulatedText.replace(/<!--GOALS_JSON[\s\S]*$/, '').trim();
+      // Detect specialist markers during streaming
+      const newIds = extractSpecialistIds(accumulatedText);
+      for (const id of newIds) consultedSpecialists.add(id);
+      if (consultedSpecialists.size > 0) updateSpecialistIndicators(consultedSpecialists);
+      // Strip partial GOALS_JSON and specialist markers from streaming display
+      let displayText = accumulatedText.replace(/<!--GOALS_JSON[\s\S]*$/, '').trim();
+      displayText = stripSpecialistMarkers(displayText);
+      displayText = stripPartialSpecialistMarkers(displayText);
       bubbleEl.innerHTML = marked.parse(displayText);
       scrollChatToBottom();
     },
     // onComplete
     (fullText) => {
+      // Final specialist indicator update
+      const finalIds = extractSpecialistIds(fullText);
+      for (const id of finalIds) consultedSpecialists.add(id);
+      if (consultedSpecialists.size > 0) updateSpecialistIndicators(consultedSpecialists);
+      // Process goals and strip markers
       const cleanText = extractAndUpdateGoals(fullText);
-      bubbleEl.innerHTML = marked.parse(cleanText);
+      let displayText = stripSpecialistMarkers(cleanText);
+      // Render specialist attribution badges
+      displayText = renderSpecialistAttribution(displayText);
+      bubbleEl.innerHTML = marked.parse(displayText);
       createFeedbackButtons(assistantEl);
       scrollChatToBottom();
       isSending = false;
@@ -290,7 +308,7 @@ function showWelcomeMessage() {
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble';
   bubble.innerHTML = `
-    <p>Welcome! I'm <strong>Morgan Chen</strong>, your financial planning advisor in this educational sandbox.</p>
+    <p>Welcome! I'm <strong>Morgan Chen</strong>, your lead financial planning advisor. I work with a team of <strong>7 specialist advisors</strong> who I'll bring in as needed based on your questions.</p>
     <p>I have a <strong>complete holistic view</strong> of your finances:</p>
     <ul>
       <li><strong>Portfolio:</strong> ${fmtCurrency.format(p.totalValue)} across ${p.accounts.length} accounts at Fidelity</li>
