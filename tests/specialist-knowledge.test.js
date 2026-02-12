@@ -98,10 +98,10 @@ describe('retirement knowledge — Priya Patel', () => {
     expect(text).toContain('Social Security');
   });
 
-  it('references 401(k) and HSA maximums', () => {
+  it('references 401(k) and HSA amounts from PORTFOLIO_DATA', () => {
     const text = SPECIALIST_KNOWLEDGE.retirement();
-    expect(text).toContain('$23,500');
-    expect(text).toContain('$8,550');
+    expect(text).toContain(fmtDollars(PORTFOLIO_DATA.w2Income.retirement401kBox12D));
+    expect(text).toContain(fmtDollars(PORTFOLIO_DATA.w2Income.hsaBox12W));
   });
 });
 
@@ -113,9 +113,9 @@ describe('debt knowledge — Marcus Thompson', () => {
     expect(text).toContain('refinancing');
   });
 
-  it('references mortgage and DTI', () => {
+  it('references mortgage rate and DTI from PORTFOLIO_DATA', () => {
     const text = SPECIALIST_KNOWLEDGE.debt();
-    expect(text).toContain('6.25%');
+    expect(text).toContain(fmtPct(PORTFOLIO_DATA.debt[0].interestRate));
     expect(text).toContain('DTI');
   });
 });
@@ -143,10 +143,12 @@ describe('insurance knowledge — Diana Nakamura', () => {
     expect(text).toContain('estate planning');
   });
 
-  it('references coverage gap and term life expiry', () => {
+  it('references coverage amount and term life expiry from PORTFOLIO_DATA', () => {
     const text = SPECIALIST_KNOWLEDGE.insurance();
-    expect(text).toContain('$1M');
-    expect(text).toContain('2042');
+    const li = PORTFOLIO_DATA.estate.lifeInsurance;
+    const expiryYear = parseInt(li.startDate.split('-')[0]) + parseInt(li.term);
+    expect(text).toContain(fmtM(li.coverageAmount));
+    expect(text).toContain(String(expiryYear));
   });
 });
 
@@ -157,11 +159,13 @@ describe('cashflow knowledge — James Park', () => {
     expect(text).toContain('emergency fund');
   });
 
-  it('references income and DTI ratio', () => {
+  it('references income and DTI ratio from PORTFOLIO_DATA', () => {
     const text = SPECIALIST_KNOWLEDGE.cashflow();
-    expect(text).toContain('$195K');
+    expect(text).toContain(fmtK(PORTFOLIO_DATA.owner.annualIncome));
     expect(text).toContain('DTI');
-    expect(text).toContain('33%');
+    const debtSum = computeDebtSummary();
+    const dti = Math.round((debtSum.totalMonthly / (PORTFOLIO_DATA.owner.annualIncome / 12)) * 100);
+    expect(text).toContain(dti + '%');
   });
 });
 
@@ -176,5 +180,87 @@ describe('goals knowledge — Elena Vasquez', () => {
     const text = SPECIALIST_KNOWLEDGE.goals();
     expect(text).toContain('529');
     expect(text).toContain('competing priorities');
+  });
+});
+
+describe('dynamic value computation in specialist knowledge', () => {
+  it('tax: NVDA cost basis and price come from PORTFOLIO_DATA', () => {
+    const text = SPECIALIST_KNOWLEDGE.tax();
+    const nvda = PORTFOLIO_DATA.accounts[5].holdings[0];
+    expect(text).toContain('$' + nvda.costBasis);
+    expect(text).toContain('$' + nvda.currentPrice);
+  });
+
+  it('tax: withholding rate matches computed value', () => {
+    const text = SPECIALIST_KNOWLEDGE.tax();
+    const w2 = PORTFOLIO_DATA.w2Income;
+    const totalWithholding = w2.federalWithheldBox2 + w2.socialSecurityWithheldBox4 + w2.medicareWithheldBox6 + w2.stateWithheldBox17;
+    const effectivePct = Math.round((totalWithholding / PORTFOLIO_DATA.owner.annualIncome) * 100);
+    expect(text).toContain(effectivePct + '%');
+  });
+
+  it('tax: federal and state brackets come from PORTFOLIO_DATA', () => {
+    const text = SPECIALIST_KNOWLEDGE.tax();
+    expect(text).toContain(PORTFOLIO_DATA.owner.taxBracketFederal);
+    expect(text).toContain(PORTFOLIO_DATA.owner.taxBracketState);
+  });
+
+  it('retirement: net worth matches portfolio minus debt', () => {
+    const text = SPECIALIST_KNOWLEDGE.retirement();
+    const portfolio = computePortfolio();
+    const debt = computeDebtSummary();
+    const netWorth = Math.round(portfolio.totalValue - debt.totalBalance);
+    expect(text).toContain(fmtK(netWorth));
+  });
+
+  it('retirement: includes owner age from PORTFOLIO_DATA', () => {
+    const text = SPECIALIST_KNOWLEDGE.retirement();
+    expect(text).toContain(PORTFOLIO_DATA.owner.age + '-year-old');
+  });
+
+  it('debt: all three debt balances come from PORTFOLIO_DATA', () => {
+    const text = SPECIALIST_KNOWLEDGE.debt();
+    for (const debt of PORTFOLIO_DATA.debt) {
+      expect(text).toContain(fmtK(debt.currentBalance));
+    }
+  });
+
+  it('debt: annual debt service equals monthly * 12', () => {
+    const text = SPECIALIST_KNOWLEDGE.debt();
+    const debtSum = computeDebtSummary();
+    expect(text).toContain(fmtDollars(debtSum.totalMonthly * 12));
+  });
+
+  it('rebalancing: US equity percentage comes from computePortfolio', () => {
+    const text = SPECIALIST_KNOWLEDGE.rebalancing();
+    const portfolio = computePortfolio();
+    const pct = Math.round(portfolio.assetAllocation['US Equity'] * 100);
+    expect(text).toContain(pct + '%');
+  });
+
+  it('insurance: expiry year computed from start date + term', () => {
+    const text = SPECIALIST_KNOWLEDGE.insurance();
+    const li = PORTFOLIO_DATA.estate.lifeInsurance;
+    const expiryYear = parseInt(li.startDate.split('-')[0]) + parseInt(li.term);
+    expect(text).toContain(String(expiryYear));
+  });
+
+  it('cashflow: total withholding computed from W-2 fields', () => {
+    const text = SPECIALIST_KNOWLEDGE.cashflow();
+    const w2 = PORTFOLIO_DATA.w2Income;
+    const total = w2.federalWithheldBox2 + w2.socialSecurityWithheldBox4 + w2.medicareWithheldBox6 + w2.stateWithheldBox17;
+    expect(text).toContain(fmtK(total));
+  });
+
+  it('goals: 529 value comes from computePortfolio', () => {
+    const text = SPECIALIST_KNOWLEDGE.goals();
+    const edu529 = computePortfolio().accounts[3];
+    expect(text).toContain(fmtK(edu529.totalValue));
+  });
+
+  it('goals: years to college computed from beneficiary age', () => {
+    const text = SPECIALIST_KNOWLEDGE.goals();
+    const childAge = parseInt(PORTFOLIO_DATA.accounts[3].beneficiary.match(/age (\d+)/)[1]);
+    expect(text).toContain((18 - childAge) + ' years to college');
   });
 });
