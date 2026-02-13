@@ -135,3 +135,18 @@ function resetGoals() {
   body.classList.add('collapsed');
   toggle.classList.remove('expanded');
 }
+
+// ===== Per-Client Goal Persistence =====
+
+function getCurrentGoalsState() {
+  return [...currentGoals];
+}
+
+function restoreGoalsState(goals) {
+  if (!goals || goals.length === 0) {
+    resetGoals();
+    return;
+  }
+  currentGoals = [...goals];
+  renderGoals();
+}

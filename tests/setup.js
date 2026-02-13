@@ -19,6 +19,7 @@ globalThis.ChatEngine = {
 
 // Order matters: data → compute → helpers → render → goals → app (same as index.html)
 const scripts = [
+  'clients-data.js',
   'portfolio-data.js',
   'portfolio-compute.js',
   'render-helpers.js',
@@ -33,6 +34,7 @@ const scripts = [
   'specialists/cashflow.js',
   'specialists/goals-specialist.js',
   'goals.js',
+  'client-sidebar.js',
   'app.js',
 ];
 

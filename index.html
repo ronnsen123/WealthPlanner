@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 
   <!-- App Styles -->
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
 
@@ -72,6 +72,15 @@
 
   <!-- ===== Main Layout ===== -->
   <main id="app-main">
+
+    <!-- Client Sidebar -->
+    <aside id="client-sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Clients</h2>
+        <button id="sidebar-toggle" title="Collapse sidebar">&#9664;</button>
+      </div>
+      <div id="client-list"></div>
+    </aside>
 
     <!-- LEFT: Portfolio Panel -->
     <section id="portfolio-panel">
@@ -153,23 +162,25 @@
     </section>
   </main>
 
-  <!-- App Scripts (order matters — data → compute → helpers → render → specialists → knowledge → chat → goals → app) -->
-  <script src="portfolio-data.js?v=12"></script>
-  <script src="portfolio-compute.js?v=12"></script>
-  <script src="render-helpers.js?v=12"></script>
-  <script src="portfolio-render.js?v=12"></script>
-  <script src="specialists.js?v=12"></script>
-  <script src="specialists/_registry.js?v=12"></script>
-  <script src="specialists/tax.js?v=12"></script>
-  <script src="specialists/retirement.js?v=12"></script>
-  <script src="specialists/debt.js?v=12"></script>
-  <script src="specialists/rebalancing.js?v=12"></script>
-  <script src="specialists/insurance.js?v=12"></script>
-  <script src="specialists/cashflow.js?v=12"></script>
-  <script src="specialists/goals-specialist.js?v=12"></script>
-  <script src="chat.js?v=12"></script>
-  <script src="goals.js?v=12"></script>
-  <script src="app.js?v=12"></script>
+  <!-- App Scripts (order matters — clients → data → compute → helpers → render → specialists → knowledge → chat → goals → sidebar → app) -->
+  <script src="clients-data.js?v=13"></script>
+  <script src="portfolio-data.js?v=13"></script>
+  <script src="portfolio-compute.js?v=13"></script>
+  <script src="render-helpers.js?v=13"></script>
+  <script src="portfolio-render.js?v=13"></script>
+  <script src="specialists.js?v=13"></script>
+  <script src="specialists/_registry.js?v=13"></script>
+  <script src="specialists/tax.js?v=13"></script>
+  <script src="specialists/retirement.js?v=13"></script>
+  <script src="specialists/debt.js?v=13"></script>
+  <script src="specialists/rebalancing.js?v=13"></script>
+  <script src="specialists/insurance.js?v=13"></script>
+  <script src="specialists/cashflow.js?v=13"></script>
+  <script src="specialists/goals-specialist.js?v=13"></script>
+  <script src="chat.js?v=13"></script>
+  <script src="goals.js?v=13"></script>
+  <script src="client-sidebar.js?v=13"></script>
+  <script src="app.js?v=13"></script>
 
 </body>
 </html>

@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Wire up UI
   initLandingOverlay();
+  initClientSidebar();
   initSpecialistPills();
   initApiKey();
   initChat();
@@ -308,8 +309,8 @@ function showWelcomeMessage() {
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble';
   bubble.innerHTML = `
-    <p>Welcome! I'm <strong>Morgan Chen</strong>, your lead financial planning advisor. I work with a team of <strong>7 specialist advisors</strong> who I'll bring in as needed based on your questions.</p>
-    <p>I have a <strong>complete holistic view</strong> of your finances:</p>
+    <p>Welcome! I'm <strong>Morgan Chen</strong>, your lead financial planning advisor. I'm reviewing <strong>${PORTFOLIO_DATA.owner.name}</strong>'s portfolio with a team of <strong>7 specialist advisors</strong> who I'll bring in as needed.</p>
+    <p>I have a <strong>complete holistic view</strong> of this client's finances:</p>
     <ul>
       <li><strong>Portfolio:</strong> ${fmtCurrency.format(p.totalValue)} across ${p.accounts.length} accounts at Fidelity</li>
       <li><strong>Income:</strong> ${fmtCurrency.format(w2.wagesBox1)} W-2 wages (${fmtCurrency.format(takeHome)} take-home)</li>
@@ -421,9 +422,13 @@ function initPanelDivider() {
 
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-    const percent = (e.clientX / window.innerWidth) * 100;
+    const sidebar = document.getElementById('client-sidebar');
+    const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
+    const availableWidth = window.innerWidth - sidebarWidth;
+    const offsetX = e.clientX - sidebarWidth;
+    const percent = (offsetX / availableWidth) * 100;
     const clamped = Math.max(25, Math.min(75, percent));
-    main.style.gridTemplateColumns = `${clamped}% 5px 1fr`;
+    main.style.gridTemplateColumns = `${sidebarWidth}px ${clamped}% 5px 1fr`;
   });
 
   document.addEventListener('mouseup', () => {
